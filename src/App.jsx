@@ -9,7 +9,8 @@ function App() {
     location: ''
   });
 
-  const [showPopup, setShowPopup] = useState(false); // ✅ Popup state
+  const [errors, setErrors] = useState({});
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,12 +24,40 @@ function App() {
     }
   };
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (!form.name || form.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters long';
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!form.email || !emailRegex.test(form.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!form.phone || !phoneRegex.test(form.phone)) {
+      newErrors.phone = 'Phone number must be exactly 10 digits';
+    }
+
+    if (!form.location || form.location.trim().length === 0) {
+      newErrors.location = 'Location is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
+
     try {
       await axios.post('https://sheetdb.io/api/v1/4thq1zig3g12n', { data: form });
-      setShowPopup(true); // ✅ Show popup
+      setShowPopup(true);
       setForm({ name: '', email: '', phone: '', location: '' });
+      setErrors({});
     } catch (err) {
       console.error(err);
       alert('Submission failed!');
@@ -38,7 +67,7 @@ function App() {
   return (
     <div id="main" className="min-h-screen flex items-center justify-left bg-gray-100 relative">
 
-      {/* ✅ Popup Modal */}
+      {/* ✅ Popup */}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl text-center">
@@ -59,44 +88,60 @@ function App() {
         <h2 className="text-2xl font-bold mb-6 text-center">
           Fill this, I will give u a task!! 🎁✨❤️
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-10">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
-          />
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            onBlur={handleEmailBlur}
-            required
-            className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
-          />
-          <input
-            type="number"
-            name="phone"
-            placeholder="Contact Number"
-            value={form.phone}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
-          />
-          <input
-            type="text"
-            name="location"
-            placeholder="Location"
-            value={form.location}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
-          />
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          </div>
+
+          <div>
+            <input
+              type="text"
+              name="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+              onBlur={handleEmailBlur}
+              required
+              className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          </div>
+
+          <div>
+            <input
+              type="number"
+              name="phone"
+              placeholder="Contact Number"
+              value={form.phone}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
+            />
+            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+          </div>
+
+          <div>
+            <input
+              type="text"
+              name="location"
+              placeholder="Location"
+              value={form.location}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 bg-white/50 text-black border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
+            />
+            {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
+          </div>
+
           <button
             type="submit"
             className="w-full bg-white text-black py-2 rounded-lg hover:bg-black hover:text-white transition-colors"
