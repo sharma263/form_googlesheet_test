@@ -35,10 +35,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white/30 backdrop-blur-md border border-white/40 shadow-lg rounded-xl p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Form</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div id='main' className="min-h-screen flex items-center justify-left bg-gray-100">
+      
+      <div className="bg-white/30 ml-14 h- backdrop-blur-md border border-white/40  shadow-lg rounded-xl p-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Fill this, I will give u a task!! 🎁✨❤️
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-10 ">
           <input
             type="text"
             name="name"
@@ -78,7 +81,7 @@ function App() {
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="w-full bg-white text-black py-2 rounded-lg  transition-colors"
           >
             Submit
           </button>
