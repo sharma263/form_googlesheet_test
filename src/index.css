@@ -8,3 +8,14 @@
   background-repeat: no-repeat;
 
 }
+
+/* Mobile background override */
+@media (max-width: 640px) {
+  #main {
+    background-image: url('/mobilebg4.webp');
+    padding-right: 35px;
+    background-size: auto;
+
+    
+  }
+}
